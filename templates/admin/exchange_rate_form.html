@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Edit Rate{% endblock %}
+{% block content %}
+<div class="container">
+  <h2>Edit Exchange Rate</h2>
+  <form method="post" action="">
+    <div class="form-field">
+      <label class="label">Currency Code</label>
+      <input class="input" name="currency_code" value="{{ rate.currency_code }}" readonly>
+    </div>
+    <div class="form-field">
+      <label class="label">Rate (1 USD = ?)</label>
+      <input class="input" name="rate" value="{{ rate.rate }}">
+    </div>
+    <div>
+      <button class="btn" type="submit">Save</button>
+      <a class="btn" href="{{ url_for('admin_exchange_rates') }}" style="background:#eee;color:var(--accent);margin-left:8px">Back</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

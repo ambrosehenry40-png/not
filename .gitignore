@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual env
+venv/
+env/
+.venv/
+
+# IDE / OS
+.vscode/
+.DS_Store
+
+# Local DBs and uploads
+app.db
+*.sqlite3
+static/uploads/
+static/exports/
+
+# Secrets
+.env
+
+# Exports and logs
+*.log

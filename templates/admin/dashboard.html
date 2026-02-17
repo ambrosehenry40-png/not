@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<div class="container">
+  <h2>Admin Dashboard</h2>
+
+  <h3>Users</h3>
+  <table class="table">
+    <thead><tr><th>Username</th><th>Email</th><th>Balance</th><th>Admin</th></tr></thead>
+    <tbody>
+      {% for u in users %}
+        <tr><td>{{ u.username }}</td><td>{{ u.email }}</td><td>${{ '%.2f'|format(u.balance or 0) }}</td><td>{{ 'Yes' if u.is_admin else 'No' }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h3 style="margin-top:18px">Pending Investments</h3>
+  <div>
+    {% for i in investments %}
+      <div class="plan-card" style="margin-bottom:8px">
+        <div><strong>Investment #{{ i.id }}</strong> — User {{ i.user_id }}</div>
+        <div style="margin-top:6px">Proof: {{ i.proof_image or 'No proof' }}</div>
+        <div style="margin-top:6px">Amount (USD): ${{ '%.2f'|format(i.amount_usd if i.amount_usd is defined else 0) }}</div>
+        <div style="margin-top:6px">Amount (Local): {{ i.currency_code or '-' }} {{ '%.2f'|format(i.amount_local if i.amount_local is defined and i.amount_local is not none else 0) }}</div>
+        <div style="margin-top:8px">
+          <form method="post" action="/admin/approve_investment/{{ i.id }}" style="display:inline"><button class="btn">Approve</button></form>
+          <form method="post" action="/admin/reject_investment/{{ i.id }}" style="display:inline;margin-left:8px"><button class="btn" style="background:#eee;color:var(--accent)">Reject</button></form>
+          <a class="btn" href="/admin/investments/{{ i.id }}/edit" style="margin-left:8px;background:#f3f4f6;color:#111">Edit</a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <h3 style="margin-top:18px">Pending Withdrawals</h3>
+  <div>
+    {% for w in withdrawals %}
+      <div class="plan-card" style="margin-bottom:8px">
+        <div><strong>Request #{{ w.id }}</strong> — User {{ w.user_id }} — ${{ w.amount }}</div>
+        <div style="margin-top:8px">
+          <form method="post" action="/admin/approve_withdrawal/{{ w.id }}" style="display:inline"><button class="btn">Approve</button></form>
+          <form method="post" action="/admin/reject_withdrawal/{{ w.id }}" style="display:inline;margin-left:8px"><button class="btn" style="background:#eee;color:var(--accent)">Reject</button></form>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <h3 style="margin-top:18px">Withdrawal Settings</h3>
+  {% if settings %}
+    <p>Min: ${{ settings.min_amount }} — Max: ${{ settings.max_amount }}</p>
+  {% endif %}
+</div>
+{% endblock %}

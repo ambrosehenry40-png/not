@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}Create Account{% endblock %}
+{% block content %}
+<section class="container">
+  <div class="form-card" style="max-width:520px;margin:28px auto">
+    <h2 style="margin:0 0 8px 0">Create your account</h2>
+    <p style="margin:0 0 16px 0;color:#6b7280">Secure registration. Passwords are stored hashed.</p>
+    <form method="post" novalidate>
+      <div class="form-field">
+        <label class="label">Username</label>
+        <input class="input" name="username" required autocomplete="username" placeholder="your-username">
+      </div>
+      <div class="form-field">
+        <label class="label">Email</label>
+        <input class="input" name="email" type="email" required autocomplete="email" placeholder="you@example.com">
+      </div>
+      <div class="form-field">
+        <label class="label">Password</label>
+        <input class="input" name="password" type="password" required autocomplete="new-password" placeholder="Choose a strong password">
+        <div class="hint">Use at least 8 characters, include letters and numbers.</div>
+      </div>
+      <div class="form-field">
+        <label class="label">Country</label>
+        <select id="country-select" name="country" class="input" required>
+          <option value="">Select your country</option>
+          <option value="NG">Nigeria</option>
+          <option value="US">United States</option>
+          <option value="PG">Papua New Guinea</option>
+          <option value="GB">United Kingdom</option>
+          <option value="CA">Canada</option>
+        </select>
+        <div class="hint">Selecting your country sets your default currency.</div>
+      </div>
+      <input type="hidden" name="currency_code" id="currency_code">
+      <input type="hidden" name="currency_symbol" id="currency_symbol">
+      <input type="hidden" name="currency_name" id="currency_name">
+      <div style="margin-top:12px">
+        <button class="btn" type="submit" style="width:100%">Create account</button>
+      </div>
+    </form>
+    <p style="margin-top:12px;color:#6b7280;font-size:14px">Already have an account? <a href="/login">Sign in</a></p>
+  </div>
+</section>
+<script>
+// small script sets currency fields based on country selection
+const countryCurrencyMap = {
+  'NG': { code: 'NGN', symbol: '₦', name: 'Naira' , flag: '🇳🇬'},
+  'US': { code: 'USD', symbol: '$', name: 'US Dollar', flag: '🇺🇸'},
+  'PG': { code: 'PGK', symbol: 'K', name: 'Kina', flag: '🇵🇬'},
+  'GB': { code: 'GBP', symbol: '£', name: 'Pound Sterling', flag: '🇬🇧'},
+  'CA': { code: 'CAD', symbol: '$', name: 'Canadian Dollar', flag: '🇨🇦'}
+};
+document.addEventListener('DOMContentLoaded', function(){
+  const sel = document.getElementById('country-select');
+  const code = document.getElementById('currency_code');
+  const sym = document.getElementById('currency_symbol');
+  const name = document.getElementById('currency_name');
+  sel && sel.addEventListener('change', function(){
+    const v = sel.value;
+    if(countryCurrencyMap[v]){
+      code.value = countryCurrencyMap[v].code;
+      sym.value = countryCurrencyMap[v].symbol;
+      name.value = countryCurrencyMap[v].name;
+    } else {
+      code.value = 'USD'; sym.value = '$'; name.value = 'US Dollar';
+    }
+  });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Exchange Rates{% endblock %}
+{% block content %}
+<div class="container">
+  <h2>Exchange Rates (Base USD)</h2>
+  <form method="post" action="/admin/exchange_rates/update" style="margin-bottom:12px">
+    <button class="btn">Update Now</button>
+  </form>
+  <table class="table">
+    <thead><tr><th>Currency</th><th>Rate (1 USD = ?)</th><th>Last Updated</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for r in rates %}
+        <tr>
+          <td>{{ r.currency_code }}</td>
+          <td>{{ r.rate }}</td>
+          <td>{{ r.updated_at }}</td>
+          <td><a href="/admin/exchange_rates/{{ r.currency_code }}/edit">Edit</a></td>
+        </tr>
+      {% else %}
+        <tr><td colspan="4">No rates found</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

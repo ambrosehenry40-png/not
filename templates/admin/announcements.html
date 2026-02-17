@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Announcements{% endblock %}
+{% block content %}
+<h2>Announcements / News</h2>
+<a class="btn" href="{{ url_for('admin_announcements_new') }}">New Announcement</a>
+<table style="width:100%;margin-top:12px;border-collapse:collapse">
+<thead>
+  <tr><th>Title</th><th>Display</th><th>Active</th><th>Start</th><th>End</th><th>Actions</th></tr>
+</thead>
+<tbody>
+  {% for a in announcements %}
+  <tr style="border-top:1px solid #eee">
+    <td>{{ a.title }}</td>
+    <td>{{ a.display_type if a.display_type is defined else 'slider' }}</td>
+    <td>{{ 'Yes' if a.is_active==1 else 'No' }}</td>
+    <td>{{ a.start_date or '-' }}</td>
+    <td>{{ a.end_date or '-' }}</td>
+    <td>
+      <a class="btn" href="{{ url_for('admin_announcements_edit', ann_id=a.id) }}">Edit</a>
+      <form style="display:inline" method="post" action="{{ url_for('admin_announcements_delete', ann_id=a.id) }}" onsubmit="return confirm('Delete announcement?')">
+        <button class="btn" type="submit">Delete</button>
+      </form>
+    </td>
+  </tr>
+  {% else %}
+  <tr><td colspan="5">No announcements</td></tr>
+  {% endfor %}
+</tbody>
+</table>
+{% endblock %}

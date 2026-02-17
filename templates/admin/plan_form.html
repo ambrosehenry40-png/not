@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Plan Form{% endblock %}
+{% block content %}
+<section class="container" style="max-width:720px;margin-top:18px">
+  <div class="form-card">
+    <h2>{{ 'Edit Plan' if plan else 'Create Plan' }}</h2>
+    <form method="post">
+      <div class="form-field">
+        <label class="label">Plan Name</label>
+        <input class="input" name="plan_name" value="{{ plan.plan_name if plan else '' }}" required>
+      </div>
+      <div class="form-field">
+        <label class="label">Minimum Amount</label>
+        <input class="input" name="minimum_amount" type="number" step="0.01" value="{{ plan.minimum_amount if plan else 0 }}" required>
+      </div>
+      <div class="form-field">
+        <label class="label">Profit Amount</label>
+        <input class="input" name="profit_amount" type="number" step="0.01" value="{{ plan.profit_amount if plan else 0 }}" required>
+      </div>
+      <div class="form-field">
+        <label class="label">Total Return</label>
+        <input class="input" name="total_return" type="number" step="0.01" value="{{ plan.total_return if plan else 0 }}">
+      </div>
+      <div class="form-field">
+        <label class="label">Duration (days)</label>
+        <input class="input" name="duration_days" type="number" value="{{ plan.duration_days if plan else 1 }}" required>
+      </div>
+      <div class="form-field">
+        <label><input type="checkbox" name="capital_back" {% if plan and plan.capital_back %}checked{% endif %}> Capital Back</label>
+      </div>
+      <div class="form-field">
+        <label class="label">Status</label>
+        <select name="status" class="input">
+          <option value="active" {% if plan and plan.status=='active' %}selected{% endif %}>Active</option>
+          <option value="inactive" {% if plan and plan.status=='inactive' %}selected{% endif %}>Inactive</option>
+        </select>
+      </div>
+      <div style="margin-top:12px">
+        <button class="btn" type="submit">Save</button>
+        <a href="/admin/plans" style="margin-left:8px">Cancel</a>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}

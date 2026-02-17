@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}Announcement{% endblock %}
+{% block content %}
+<h2>{{ 'Edit' if announcement else 'New' }} Announcement</h2>
+<form id="ann-form" method="post" enctype="multipart/form-data">
+  <label>Title</label>
+  <input type="text" name="title" value="{{ announcement.title if announcement else '' }}" required>
+
+  <label>Content</label>
+  <textarea name="content" rows="6">{{ announcement.content if announcement else '' }}</textarea>
+
+  <label>Image (optional)</label>
+  <input type="file" name="image" accept="image/*">
+  {% if announcement and announcement.image_url %}
+    <div><img src="/uploads/{{ announcement.image_url }}" style="max-width:200px"></div>
+  {% endif %}
+
+  <label>Video URL or YouTube link (optional)</label>
+  <input type="text" name="video_url" value="{{ announcement.video_url if announcement else '' }}">
+  <label>Or upload video (mp4, webm, ogg, max 20MB)</label>
+  <input id="video-input" type="file" name="video" accept="video/mp4,video/webm,video/ogg">
+  <input type="hidden" id="video_file" name="video_file" value="{{ announcement.video_file if announcement and announcement.video_file else '' }}">
+  <div id="video-progress" style="display:none;margin-top:8px">
+    <div style="background:#eee;width:100%;height:10px;border-radius:6px;overflow:hidden"><div id="video-progress-bar" style="width:0%;height:10px;background:var(--accent)"></div></div>
+    <div id="video-progress-text" style="font-size:12px;margin-top:6px"></div>
+  </div>
+  {% if announcement and announcement.video_file %}
+    <div><small>Uploaded video:</small> <a id="uploaded-video-link" href="/uploads/{{ announcement.video_file }}">View</a></div>
+  {% endif %}
+
+  <label>Display type</label>
+  <select name="display_type">
+    <option value="slider" {% if not announcement or (announcement.display_type is defined and announcement.display_type=='slider') %}selected{% endif %}>Rotating Banner (Slider)</option>
+    <option value="modal" {% if announcement and announcement.display_type=='modal' %}selected{% endif %}>Modal Popup</option>
+    <option value="floating" {% if announcement and announcement.display_type=='floating' %}selected{% endif %}>Floating Card</option>
+  </select>
+
+  <label>Start date (optional)</label>
+  <input type="datetime-local" name="start_date" value="{{ announcement.start_date if announcement and announcement.start_date else '' }}">
+
+  <label>End date (optional)</label>
+  <input type="datetime-local" name="end_date" value="{{ announcement.end_date if announcement and announcement.end_date else '' }}">
+
+  <label><input type="checkbox" name="is_active" {% if announcement and announcement.is_active==1 %}checked{% endif %}> Active</label>
+
+  <div style="margin-top:12px">
+    <button class="btn" type="submit">Save</button>
+    <a class="btn" href="{{ url_for('admin_announcements') }}">Cancel</a>
+  </div>
+</form>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const input = document.getElementById('video-input');
+  const progress = document.getElementById('video-progress');
+  const bar = document.getElementById('video-progress-bar');
+  const text = document.getElementById('video-progress-text');
+  const hidden = document.getElementById('video_file');
+  if(!input) return;
+  input.addEventListener('change', function(){
+    const file = input.files[0];
+    if(!file) return;
+    const allowed = ['video/mp4','video/webm','video/ogg'];
+    if(!allowed.includes(file.type)){
+      alert('Invalid video type. Allowed: mp4, webm, ogg');
+      input.value = '';
+      return;
+    }
+    const max = {{ (20 * 1024 * 1024) }}; // 20MB
+    if(file.size > max){
+      alert('File exceeds 20MB limit');
+      input.value = '';
+      return;
+    }
+    // upload via XHR to get progress
+    const fd = new FormData();
+    fd.append('video', file);
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '{{ url_for("admin_announcements_upload_video") }}', true);
+    xhr.upload.addEventListener('progress', function(e){
+      if(e.lengthComputable){
+        const pct = Math.round((e.loaded / e.total) * 100);
+        progress.style.display = 'block';
+        bar.style.width = pct + '%';
+        text.textContent = pct + '% uploaded';
+      }
+    });
+    xhr.onreadystatechange = function(){
+      if(xhr.readyState === 4){
+        if(xhr.status === 200){
+          try{
+            const resp = JSON.parse(xhr.responseText);
+            hidden.value = resp.filename;
+            text.textContent = 'Upload complete';
+            const link = document.getElementById('uploaded-video-link');
+            if(link){ link.href = resp.url; link.textContent = 'View'; }
+            else{
+              const d = document.createElement('div'); d.innerHTML = '<small>Uploaded video:</small> <a href="'+resp.url+'">View</a>';
+              input.parentNode.insertBefore(d, input.nextSibling);
+            }
+          }catch(err){ alert('Upload failed'); }
+        } else {
+          try{ const r = JSON.parse(xhr.responseText); alert(r.error || 'Upload failed'); }catch(e){ alert('Upload failed'); }
+        }
+      }
+    };
+    xhr.send(fd);
+  });
+});
+</script>
+{% endblock %}

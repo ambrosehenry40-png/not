@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Assistant Export History{% endblock %}
+{% block content %}
+<h2>Assistant Export History</h2>
+<p>Saved CSV exports of assistant logs.</p>
+<table class="table">
+  <thead><tr><th>ID</th><th>Filename</th><th>Filters</th><th>Created At</th></tr></thead>
+  <tbody>
+    {% for e in exports %}
+      <tr>
+        <td>{{ e.id }}</td>
+        <td><a href="{{ url_for('static', filename='exports/' ~ e.filename) }}">{{ e.filename }}</a></td>
+        <td>{{ e.filters }}</td>
+        <td>{{ e.created_at }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="4">No exports found</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

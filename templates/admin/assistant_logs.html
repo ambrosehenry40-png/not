@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Assistant Logs{% endblock %}
+{% block content %}
+<h2>Assistant Interaction Logs</h2>
+<form method="get" style="display:flex;gap:8px;flex-wrap:wrap;align-items:end">
+  <div>
+    <label>Node</label>
+    <select name="node_id">
+      <option value="">All</option>
+      {% for n in nodes %}
+        <option value="{{ n.id }}" {% if filters.node_id==n.id|string %}selected{% endif %}>{{ n.id }} - {{ n.question }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div>
+    <label>Option</label>
+    <select name="option_id">
+      <option value="">All</option>
+      {% for o in options %}
+        <option value="{{ o.id }}" {% if filters.option_id==o.id|string %}selected{% endif %}>{{ o.id }} - {{ o.option_text }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div>
+    <label>User ID</label>
+    <input name="user_id" value="{{ filters.user_id or '' }}">
+  </div>
+  <div>
+    <label>Start date</label>
+    <input type="datetime-local" name="start_date" value="{{ filters.start_date or '' }}">
+  </div>
+  <div>
+    <label>End date</label>
+    <input type="datetime-local" name="end_date" value="{{ filters.end_date or '' }}">
+  </div>
+  <div>
+    <button class="btn" type="submit">Filter</button>
+    <a class="btn" href="{{ url_for('admin_assistant_logs_export') }}?{% for k,v in filters.items() %}{% if k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}">Export CSV</a>
+  </div>
+</form>
+
+<table class="table" style="margin-top:12px">
+  <thead><tr><th>ID</th><th>When</th><th>User</th><th>Node</th><th>Option</th><th>Metadata</th></tr></thead>
+  <tbody>
+    {% for r in rows %}
+      <tr>
+        <td>{{ r.id }}</td>
+        <td>{{ r.created_at }}</td>
+        <td>{{ r.user_id or '-' }}</td>
+        <td>{{ r.node_id or '-' }} {% if r.node_question %} - {{ r.node_question }}{% endif %}</td>
+        <td>{{ r.option_id or '-' }} {% if r.option_text %} - {{ r.option_text }}{% endif %}</td>
+        <td>{{ r.metadata or '' }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="6">No logs found</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+  {% if total_pages and total_pages > 1 %}
+    <div>
+      {% if page > 1 %}
+        <a class="btn" href="?{% for k,v in filters.items() %}{% if k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}page={{ page-1 }}">Previous</a>
+      {% endif %}
+      Page {{ page }} / {{ total_pages }}
+      {% if page < total_pages %}
+        <a class="btn" href="?{% for k,v in filters.items() %}{% if k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}page={{ page+1 }}">Next</a>
+      {% endif %}
+    </div>
+    <div>
+      <a class="btn" href="{{ url_for('admin_assistant_exports') }}">Export History</a>
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}

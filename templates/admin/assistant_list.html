@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}AI Assistant{% endblock %}
+{% block content %}
+<h2>AI Assistant Manager</h2>
+<a class="btn" href="{{ url_for('admin_assistant_new') }}">New Node</a>
+<table class="table" style="margin-top:12px">
+  <thead><tr><th>ID</th><th>Question</th><th>Root</th><th>Actions</th></tr></thead>
+  <tbody>
+    {% for n in nodes %}
+      <tr>
+        <td>{{ n.id }}</td>
+        <td>{{ n.question }}</td>
+        <td>{{ 'Yes' if n.is_root==1 else 'No' }}</td>
+        <td>
+          <a class="btn" href="{{ url_for('admin_assistant_edit', node_id=n.id) }}">Edit</a>
+          <form style="display:inline" method="post" action="{{ url_for('admin_assistant_delete', node_id=n.id) }}" onsubmit="return confirm('Delete node?')">
+            <button class="btn" type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="4">No nodes defined</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

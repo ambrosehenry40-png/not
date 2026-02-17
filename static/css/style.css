@@ -1,0 +1,156 @@
+:root{
+	--bg:#ffffff;
+	--muted:#f6f7f9;
+	--accent:#16233b; /* deep charcoal/blue */
+	--accent-2:#0f766e; /* emerald accent */
+	--success:#1f7a3a; /* green for profits */
+	--text:#0b1220;
+	--card:#ffffff;
+	--max-width:1200px;
+}
+html,body{height:100%}
+body{
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	color:var(--text);
+	background:var(--muted);
+	margin:0;
+	-webkit-font-smoothing:antialiased;
+	-moz-osx-font-smoothing:grayscale;
+}
+.container{max-width:var(--max-width);margin:0 auto;padding:0 16px}
+
+/* Header */
+.site-header{background:transparent;position:sticky;top:0;backdrop-filter: blur(4px);z-index:50}
+.header-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
+.brand .logo{font-weight:700;color:var(--accent);text-decoration:none;font-size:clamp(18px,2.5vw,22px)}
+.nav-toggle{background:none;border:0;font-size:24px;display:block}
+.primary-nav ul{list-style:none;margin:0;padding:0;display:flex;gap:12px}
+.primary-nav a{color:var(--accent);text-decoration:none;padding:8px 10px;border-radius:6px}
+.primary-nav a:hover{background:#eef2f7}
+
+/* Admin dropdown styles */
+.admin-dropdown{position:relative}
+.admin-dropdown .btn{background:transparent;color:var(--accent);padding:6px 8px}
+.admin-menu{position:absolute;right:0;top:38px;background:var(--card);border:1px solid #eef2f6;border-radius:8px;box-shadow:0 8px 18px rgba(11,20,35,0.08);display:none;min-width:180px;z-index:60;padding:8px}
+.admin-menu li{list-style:none;margin:0}
+.admin-menu a{display:block;padding:8px 10px;color:var(--text);text-decoration:none}
+.admin-menu a:hover{background:#f8fafc}
+
+/* hide inline admin links on small screens and show dropdown instead */
+@media(max-width:639px){
+	.admin-link{display:none}
+	.admin-sep{display:none}
+	.admin-dropdown{display:block}
+}
+@media(min-width:640px){
+	.admin-menu{display:none !important}
+	.admin-dropdown{display:none}
+}
+
+/* Flashes */
+.flashes{list-style:none;padding:0;margin:12px 0}
+.flashes li{padding:8px 12px;margin:6px 0;border-radius:6px}
+.success{background:#e6f7ea}
+.danger{background:#fdecea}
+.info{background:#e8f4fb}
+
+/* Hero */
+.hero{padding:36px 0;background:linear-gradient(180deg,transparent,rgba(0,0,0,0.02));}
+.hero .hero-inner{display:grid;grid-template-columns:1fr;gap:20px;align-items:center}
+.hero h1{font-size:clamp(20px,6vw,32px);margin:0;color:var(--accent)}
+.hero p{color:#475569;margin:0;max-width:60ch}
+.cta{margin-top:12px}
+.btn{display:inline-block;padding:10px 16px;border-radius:8px;background:var(--accent);color:#fff;text-decoration:none}
+
+/* Key metrics */
+.metrics{display:grid;grid-template-columns:repeat(1,1fr);gap:12px;margin-top:18px}
+.metric-card{background:var(--card);padding:16px;border-radius:10px;box-shadow:0 1px 2px rgba(12,18,26,0.04)}
+.metric-value{font-size:clamp(20px,5vw,28px);font-weight:700;color:var(--accent)}
+.metric-label{font-size:13px;color:#6b7280}
+
+/* Plans grid */
+.plans{display:grid;grid-template-columns:repeat(1,1fr);gap:12px;margin-top:18px}
+.plan-card{background:var(--card);padding:14px;border-radius:10px;border:1px solid #eef2f6}
+.plan-title{font-weight:600;color:var(--accent)}
+.plan-row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+
+/* Detailed plan card design */
+.plan-card-detailed{background:linear-gradient(180deg,#ffffff,#fbfdff);border-radius:16px;padding:18px;box-shadow:0 8px 20px rgba(11,20,35,0.06);border:1px solid rgba(15,23,42,0.04);display:flex;flex-direction:column;gap:12px}
+.plan-card-detailed .badge{align-self:flex-start;background:#fff7ed;color:#92400e;padding:6px 10px;border-radius:999px;font-size:13px;font-weight:600;border:1px solid #ffedd5}
+.plan-card-detailed .plan-name{font-size:14px;font-weight:700;color:var(--accent);letter-spacing:0.6px}
+.plan-card-detailed .plan-head{display:flex;justify-content:space-between;align-items:center}
+
+.plan-roi{display:flex;flex-direction:column;gap:6px}
+.plan-roi .invest-label{font-size:13px;color:#6b7280}
+.plan-roi .amount{font-weight:700;color:var(--accent);margin-left:6px}
+.plan-roi .gets{font-size:20px;font-weight:800}
+.plan-roi .get-amount{color:var(--success);font-size:22px;margin-left:6px}
+
+.social-proof{display:flex;gap:12px;color:#6b7280;font-size:13px}
+
+.social-proof .proof{display:flex;align-items:center;gap:6px}
+.icon{display:inline-block;vertical-align:middle;color:#6b7280}
+
+.plan-details{display:flex;flex-direction:column;gap:6px;color:#374151;font-size:14px}
+
+.funding-row{display:flex;flex-direction:column;gap:6px}
+.funding-label{font-size:13px;color:#6b7280}
+.funding-bar{background:#eef2f6;border-radius:8px;height:10px;overflow:hidden}
+.funding-fill{height:100%;background:linear-gradient(90deg,var(--accent-2),#9ae6b4);border-radius:8px}
+
+.plan-action{margin-top:6px}
+.invest-btn{width:100%;padding:12px;border-radius:12px;background:linear-gradient(180deg,var(--accent),#13324a);color:#fff;font-weight:700;box-shadow:0 6px 14px rgba(19,50,74,0.12);border:none}
+.invest-btn:hover{transform:translateY(-2px);transition:transform 150ms ease}
+
+.countdown{font-size:13px;color:#7c8796;padding:8px 0}
+.countdown-timer{font-weight:700;color:var(--accent)}
+
+@media(min-width:640px){
+	.plans{grid-template-columns:repeat(2,1fr)}
+}
+@media(min-width:1000px){
+	.plans{grid-template-columns:repeat(3,1fr)}
+}
+
+/* Dashboard cards */
+.cards{display:grid;grid-template-columns:repeat(1,1fr);gap:12px}
+.card{background:var(--card);padding:14px;border-radius:10px;border:1px solid #eef2f6}
+
+/* Admin table */
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{padding:10px;border-bottom:1px solid #eef2f6;text-align:left}
+
+/* Forms */
+.form-card{background:var(--card);padding:20px;border-radius:12px;border:1px solid #eef2f6}
+.form-field{margin-bottom:12px}
+.label{display:block;font-size:13px;color:#374151;margin-bottom:6px}
+.input{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #dbe6f0;background:#fff;color:var(--text);font-size:15px}
+.input:focus{outline:none;box-shadow:0 0 0 3px rgba(22,35,59,0.06);border-color:var(--accent)}
+.hint{font-size:13px;color:#6b7280;margin-top:6px}
+
+.btn{border:none;cursor:pointer}
+
+
+/* Responsive rules */
+@media(min-width:640px){
+	.hero .hero-inner{grid-template-columns:1fr 380px}
+	.metrics{grid-template-columns:repeat(3,1fr)}
+	.plans{grid-template-columns:repeat(2,1fr)}
+	.cards{grid-template-columns:repeat(3,1fr)}
+	.primary-nav ul{gap:18px}
+}
+@media(min-width:1000px){
+	.plans{grid-template-columns:repeat(3,1fr)}
+	.cards{grid-template-columns:repeat(4,1fr)}
+}
+
+/* mobile nav hidden by default on small screens */
+@media(max-width:639px){
+	.primary-nav{display:none}
+	.nav-toggle{display:block}
+}
+@media(min-width:640px){
+	.nav-toggle{display:none}
+	.primary-nav{display:block}
+}
+

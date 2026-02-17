@@ -1,0 +1,84 @@
+{% if announcements and announcements|length > 0 %}
+{% set modal_shown = false %}
+{% for a in announcements %}
+  {% set display = a.display_type if a.display_type is defined else 'slider' %}
+  {% if display == 'slider' %}
+    {% if loop.first %}
+      <section class="announcements-slider">
+        <div class="slider-inner">
+    {% endif %}
+          <div class="slide" data-index="{{ loop.index0 }}">
+            <div class="slide-content">
+              <h3>{{ a.title }}</h3>
+              <div class="slide-body">
+                {% if a.image_url %}
+                  <img src="/uploads/{{ a.image_url }}" alt="{{ a.title }}" style="max-height:160px;object-fit:cover;">
+                {% endif %}
+                <div class="slide-text">{{ a.content }}</div>
+              </div>
+              {% if a.video_url or (a.video_file is defined and a.video_file) %}
+                <div class="slide-video">
+                  {% if a.video_file is defined and a.video_file %}
+                    <a href="/uploads/{{ a.video_file }}" target="_blank">Play video</a>
+                  {% else %}
+                    <a href="{{ a.video_url }}" target="_blank">Watch</a>
+                  {% endif %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+    {% if loop.last %}
+        </div>
+        <div class="slider-controls">
+          <button id="ann-prev">‹</button>
+          <button id="ann-next">›</button>
+        </div>
+      </section>
+    {% endif %}
+  {% elif display == 'modal' %}
+    {% if not modal_shown %}
+      <div id="ann-modal" class="ann-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;">
+        <div style="max-width:720px;margin:6% auto;background:white;padding:18px;border-radius:8px;">
+          <h3>{{ a.title }}</h3>
+          <div>{{ a.content }}</div>
+          <div style="margin-top:8px;text-align:right"><button id="ann-close" class="btn">Close</button></div>
+        </div>
+      </div>
+      <script>
+        (function(){
+          window.addEventListener('load', function(){
+            var m = document.getElementById('ann-modal'); if(m){ m.style.display='block'; }
+            var c = document.getElementById('ann-close'); if(c){ c.addEventListener('click', function(){ document.getElementById('ann-modal').style.display='none'; }); }
+          });
+        })();
+      </script>
+      {% set modal_shown = true %}
+    {% endif %}
+  {% elif display == 'floating' %}
+    <div class="ann-floating" style="position:fixed;right:16px;bottom:16px;z-index:9998;max-width:320px;background:#fff;border:1px solid #eee;padding:12px;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,0.08)">
+      <strong>{{ a.title }}</strong>
+      <div style="margin-top:6px">{{ a.content|truncate(140) }}</div>
+      <div style="margin-top:8px;text-align:right"><button class="btn" onclick="this.parentNode.parentNode.style.display='none'">Close</button></div>
+    </div>
+  {% endif %}
+{% endfor %}
+
+<script>
+  (function(){
+    const slides = document.querySelectorAll('.announcements-slider .slide');
+    let idx = 0;
+    function show(i){
+      slides.forEach(s=>s.style.display='none');
+      if(slides[i]) slides[i].style.display='block';
+    }
+    if(slides.length>0){
+      show(0);
+      const next = document.getElementById('ann-next');
+      const prev = document.getElementById('ann-prev');
+      if(next) next.addEventListener('click', ()=>{ idx=(idx+1)%slides.length; show(idx); });
+      if(prev) prev.addEventListener('click', ()=>{ idx=(idx-1+slides.length)%slides.length; show(idx); });
+      setInterval(()=>{ idx=(idx+1)%slides.length; show(idx); }, 6000);
+    }
+  })();
+</script>
+{% endif %}

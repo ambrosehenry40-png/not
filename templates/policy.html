@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Investment Policy{% endblock %}
+{% block content %}
+<h2>Investment Policy</h2>
+<p>Please read the policy carefully. All investments and withdrawals are manually processed by admin. No automatic credits.</p>
+<form method="post" action="/accept_policy">
+  <label><input type="checkbox" required> I have read and agree to the Investment Policy</label><br>
+  <button type="submit">I Understand & Accept</button>
+</form>
+{% endblock %}

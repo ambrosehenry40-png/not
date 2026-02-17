@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Manual Invest{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <div class="brand">
+          <a href="/" class="logo">InvestPro</a>
+        </div>
+        <button id="nav-toggle" class="nav-toggle" aria-expanded="false" aria-controls="primary-nav">☰</button>
+        <nav id="primary-nav" class="primary-nav" role="navigation">
+          <ul>
+            <li><a href="/">Home</a></li>
+            {% if session.user_id %}
+              <li><a href="/dashboard">Dashboard</a></li>
+              {% if session.is_admin %}
+                <li class="admin-sep">|</li>
+                <li class="admin-link"><a href="/admin">Admin</a></li>
+                <li class="admin-link"><a href="/admin/announcements">Announcements</a></li>
+                <li class="admin-link"><a href="/admin/plans">Plans</a></li>
+                <li class="admin-link"><a href="/admin/assistant">Assistant</a></li>
+                <li class="admin-link"><a href="/admin/assistant/logs">Assistant Logs</a></li>
+                <li class="admin-link"><a href="/admin/assistant/exports">Export History</a></li>
+                <li class="admin-dropdown">
+                  <button id="admin-toggle" aria-expanded="false" class="btn">Admin ▾</button>
+                  <ul id="admin-menu" class="admin-menu" role="menu">
+                    <li><a role="menuitem" href="/admin">Dashboard</a></li>
+                    <li><a role="menuitem" href="/admin/announcements">Announcements</a></li>
+                    <li><a role="menuitem" href="/admin/plans">Plans</a></li>
+                    <li><a role="menuitem" href="/admin/assistant">Assistant</a></li>
+                    <li><a role="menuitem" href="/admin/assistant/logs">Logs</a></li>
+                    <li><a role="menuitem" href="/admin/assistant/exports">Exports</a></li>
+                    <li><a role="menuitem" href="/admin/investment_settings">Investment Settings</a></li>
+                  </ul>
+                </li>
+              {% endif %}
+              <li><a href="/logout">Logout</a></li>
+            {% else %}
+              <li><a href="/login">Login</a></li>
+              <li><a href="/register">Register</a></li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <ul class="flashes">
+            {% for category, msg in messages %}
+              <li class="{{ category }}">{{ msg }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+    <script src="/static/js/app.js"></script>
+    {% include 'assistant_widget.html' %}
+  </body>
+</html>

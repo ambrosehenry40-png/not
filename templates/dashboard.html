@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<section class="container">
+  <h2>Dashboard</h2>
+  <div class="cards">
+    <div class="card">
+      <div class="metric-label">Total Balance</div>
+      <div class="metric-value">${{ '%.2f'|format(user.balance or 0) }}</div>
+    </div>
+    <div class="card">
+      <div class="metric-label">Active Investments</div>
+      <div class="metric-value">—</div>
+    </div>
+    <div class="card">
+      <div class="metric-label">Current Profit</div>
+      <div class="metric-value" style="color:var(--success)">—</div>
+    </div>
+  </div>
+
+  <h3 style="margin-top:18px">Investment Plans</h3>
+  <div class="plans">
+    {% for p in plans %}
+      {% set plan = p %}
+      {% include 'plan_card.html' %}
+    {% else %}
+      <p>No plans available</p>
+    {% endfor %}
+  </div>
+
+  <h3 style="margin-top:18px">Policy</h3>
+  {% if user.policy_accepted %}
+    <p>Policy accepted</p>
+  {% else %}
+    <p>You must <a href="/policy">read and accept the policy</a> before investing.</p>
+    <form method="post" action="/accept_policy"><button class="btn" type="submit">Accept Policy</button></form>
+  {% endif %}
+
+  <h3 style="margin-top:18px">Upload Proof</h3>
+  <form method="post" enctype="multipart/form-data" action="/upload_proof/1">
+    <input type="file" name="proof" required>
+    <button class="btn" type="submit">Upload</button>
+  </form>
+
+  <h3 style="margin-top:18px">Withdraw</h3>
+  <form method="post" action="/withdraw">
+    <label>Amount <input name="amount" required></label>
+    <button class="btn" type="submit">Request Withdrawal</button>
+  </form>
+
+</section>
+<section class="container">
+  <h3 style="margin-top:18px">Your Investments</h3>
+  {% if user_investments and user_investments|length > 0 %}
+    <div>
+      {% for inv in user_investments %}
+        <div class="plan-card" style="margin-bottom:8px">
+          <div><strong>Investment #{{ inv.id }}</strong> — Plan {{ inv.plan_id }} — Status: {{ inv.status }}</div>
+          <div style="margin-top:6px">Amount (USD): ${{ '%.2f'|format(inv.amount_usd if inv.amount_usd is defined else 0) }}</div>
+          <div style="margin-top:6px">Current Profit (USD): ${{ '%.2f'|format(inv.current_profit if inv.current_profit is defined and inv.current_profit is not none else 0) }}</div>
+          <div style="margin-top:6px">Proof: {{ inv.proof_image or 'No proof' }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No investments yet.</p>
+  {% endif %}
+</section>
+{% endblock %}

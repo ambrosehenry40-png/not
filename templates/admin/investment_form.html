@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Edit Investment{% endblock %}
+{% block content %}
+<div class="container">
+  <h2>Edit Investment #{{ inv.id }}</h2>
+  <div style="margin-top:8px">User: {{ inv.user_id }}</div>
+  <div style="margin-top:8px">Amount (USD): ${{ '%.2f'|format(inv.amount_usd if inv.amount_usd is defined else 0) }}</div>
+  <div style="margin-top:8px">Amount (Local): {{ inv.currency_code or '-' }} {{ '%.2f'|format(inv.amount_local if inv.amount_local is defined and inv.amount_local is not none else 0) }}</div>
+  <div style="margin-top:8px">Proof: {{ inv.proof_image or 'No proof' }}</div>
+
+  <form method="post" style="margin-top:12px">
+    <label>Current Profit (USD)
+      <input name="current_profit" value="{{ inv.current_profit if inv.current_profit is defined else '' }}" />
+    </label>
+    <div style="margin-top:12px">
+      <button class="btn" type="submit">Save</button>
+      <a class="btn" href="/admin" style="background:#eee;color:#111;margin-left:8px">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

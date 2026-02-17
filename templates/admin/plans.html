@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}Manage Investment Plans{% endblock %}
+{% block content %}
+<section class="container" style="padding:20px 0">
+  <h2>Manage Investment Plans</h2>
+  <a class="btn" href="/admin/plans/new" style="margin-bottom:12px;display:inline-block">+ Create New Plan</a>
+
+  <table class="table" style="margin-top:12px">
+    <thead><tr><th>ID</th><th>Name</th><th>Min</th><th>Profit</th><th>Total Return</th><th>Duration</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for p in plans %}
+        <tr>
+          <td>{{ p.id }}</td>
+          <td>{{ p.plan_name }}</td>
+          <td>$ {{ '%.2f'|format(p.minimum_amount) }}</td>
+          <td>$ {{ '%.2f'|format(p.profit_amount) }}</td>
+          <td>$ {{ '%.2f'|format(p.total_return) }}</td>
+          <td>{{ p.duration_days }}d</td>
+          <td>{{ p.status }}</td>
+          <td>
+            <a href="/admin/plans/{{ p.id }}/edit">Edit</a>
+            <form method="post" action="/admin/plans/{{ p.id }}/delete" style="display:inline;margin-left:8px">
+              <button type="submit" class="btn" style="background:#eee;color:var(--accent);padding:6px;border-radius:6px">Delete</button>
+            </form>
+            <form method="post" action="/admin/plans/{{ p.id }}/toggle" style="display:inline;margin-left:8px">
+              <button type="submit" class="btn" style="background:#fff7ed;color:#92400e;padding:6px;border-radius:6px">Toggle</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

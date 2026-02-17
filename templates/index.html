@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}Welcome{% endblock %}
+{% block content %}
+{% include 'announcements_partial.html' %}
+
+<section class="hero">
+	<div class="container hero-inner">
+		<div>
+			<h1>Serious, manual investment management you can trust https://github.com/ambrosehenry40-png/not.git</h1>
+			<p>All deposits, investments and withdrawals are manually reviewed by our administrators to ensure security and clarity. No automatic credits.</p>
+			<div class="cta">
+				<a class="btn" href="/register">Create account</a>
+				<a style="margin-left:8px" href="/login">Login</a>
+			</div>
+		</div>
+		<div>
+			<div class="metrics">
+				<div class="metric-card">
+					<div class="metric-value">$1.2M</div>
+					<div class="metric-label">Total Invested</div>
+				</div>
+				<div class="metric-card">
+					<div class="metric-value">8.6%</div>
+					<div class="metric-label">Average ROI</div>
+				</div>
+				<div class="metric-card">
+					<div class="metric-value">1,042</div>
+					<div class="metric-label">Investors</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section class="container">
+	<h2 style="margin-top:18px">Investment Plans</h2>
+	<div class="plans">
+		{% for p in plans %}
+			{% set plan = p %}
+			{% include 'plan_card.html' %}
+		{% else %}
+			<p>No plans available</p>
+		{% endfor %}
+	</div>
+
+	{% if total_pages and total_pages > 1 %}
+	  <nav class="pagination" style="display:flex;justify-content:center;gap:8px;margin-top:18px">
+	    {% if page > 1 %}
+	      <a class="btn" href="{{ url_for('index', page=page-1) }}">« Prev</a>
+	    {% endif %}
+	    <span style="align-self:center;color:#6b7280">Page {{ page }} of {{ total_pages }}</span>
+	    {% if page < total_pages %}
+	      <a class="btn" href="{{ url_for('index', page=page+1) }}">Next »</a>
+	    {% endif %}
+	  </nav>
+	{% endif %}
+</section>
+
+{% endblock %}

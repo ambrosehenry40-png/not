@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Assistant Node{% endblock %}
+{% block content %}
+<h2>{{ 'Edit' if node else 'New' }} Assistant Node</h2>
+<form method="post">
+  <label>Question</label>
+  <input type="text" name="question" value="{{ node.question if node else '' }}" required>
+  <label><input type="checkbox" name="is_root" {% if node and node.is_root==1 %}checked{% endif %}> Root node (start here)</label>
+
+  <h3>Options</h3>
+  <div id="options">
+    {% if options %}
+      {% for o in options %}
+        <div class="opt">
+          <input type="text" name="option_text[]" value="{{ o.option_text }}" placeholder="Button text">
+          <input type="text" name="option_next[]" value="{{ o.next_node_id or '' }}" placeholder="Next node id (optional)">
+          <select name="option_action[]">
+            <option value="none" {% if not o.action_type %}selected{% endif %}>No action</option>
+            <option value="text" {% if o.action_type=='text' %}selected{% endif %}>Show text</option>
+            <option value="redirect" {% if o.action_type=='redirect' %}selected{% endif %}>Redirect</option>
+            <option value="suggest_plan" {% if o.action_type=='suggest_plan' %}selected{% endif %}>Suggest plan</option>
+          </select>
+          <input type="text" name="option_payload[]" value="{{ o.action_payload or '' }}" placeholder="Payload (text or URL or plan id)">
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="opt">
+        <input type="text" name="option_text[]" placeholder="Button text">
+        <input type="text" name="option_next[]" placeholder="Next node id (optional)">
+        <select name="option_action[]">
+          <option value="none">No action</option>
+          <option value="text">Show text</option>
+          <option value="redirect">Redirect</option>
+          <option value="suggest_plan">Suggest plan</option>
+        </select>
+        <input type="text" name="option_payload[]" placeholder="Payload (text or URL or plan id)">
+      </div>
+    {% endif %}
+  </div>
+  <div style="margin-top:8px"><button type="button" id="add-opt" class="btn">Add option</button></div>
+  <div style="margin-top:12px">
+    <button class="btn" type="submit">Save</button>
+    <a class="btn" href="{{ url_for('admin_assistant_list') }}">Cancel</a>
+  </div>
+</form>
+<script>
+document.getElementById('add-opt').addEventListener('click', function(){
+  const d = document.createElement('div'); d.className='opt'; d.innerHTML = '<input type="text" name="option_text[]" placeholder="Button text"> <input type="text" name="option_next[]" placeholder="Next node id (optional)"> <select name="option_action[]"><option value="none">No action</option><option value="text">Show text</option><option value="redirect">Redirect</option><option value="suggest_plan">Suggest plan</option></select> <input type="text" name="option_payload[]" placeholder="Payload (text or URL or plan id)">';
+  document.getElementById('options').appendChild(d);
+});
+</script>
+{% endblock %}

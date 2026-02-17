@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Plan Details{% endblock %}
+{% block content %}
+<section class="container" style="max-width:760px;margin-top:20px">
+  <div class="plan-card-detailed">
+    <div class="plan-head">
+      <div class="plan-name">{{ plan.plan_name or ('Plan #' ~ plan.id) }} – {{ plan.duration_days }} Day{{ 's' if plan.duration_days|int != 1 }}</div>
+      <div class="badge" style="background:transparent;color:#6b7280;font-weight:600">Plan ID: {{ plan.id }}</div>
+    </div>
+
+    <div class="plan-roi">
+      <div class="invest-label">Invest <span class="amount">{{ plan.currency_symbol or '₦' }}{{ '%.2f'|format(plan.display_amount if plan.display_amount is not none else (plan.minimum_amount if plan.get('minimum_amount') else 0)) }}</span></div>
+      <div class="gets">Get <span class="get-amount">{{ plan.currency_symbol or '₦' }}{{ '%.2f'|format(plan.display_profit if plan.display_profit is not none else (plan.total_return if plan.get('total_return') else 0)) }}</span></div>
+    </div>
+
+    <div class="social-proof">
+      <span class="proof"><svg class="icon" viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> {{ stats.total_investors|default(0) }} Investors</span>
+      <span class="proof"><svg class="icon" viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/></svg> {{ stats.total_views|default(0) }} Views</span>
+    </div>
+
+    <div class="plan-details">
+      <div>Duration: <strong>{{ plan.duration_days }} Days</strong></div>
+      <div>Profit: <strong>{{ plan.currency_symbol or '₦' }}{{ '%.2f'|format(plan.display_profit if plan.display_profit is not none else (plan.profit_amount if plan.get('profit_amount') else 0)) }}</strong></div>
+      <div>Capital Back: <strong>{{ 'Yes' if plan.capital_back else 'No' }}</strong></div>
+    </div>
+
+    <div class="plan-action">
+      {% if session.user_id %}
+        <form method="post" action="/invest">
+          <input type="hidden" name="plan_id" value="{{ plan.id }}">
+          <div class="form-field" style="margin-bottom:8px">
+            <label class="label">Amount ({{ plan.currency_symbol or '$' }})</label>
+            <input class="input" id="local_amount_input" name="local_amount" type="number" step="0.01" min="0" placeholder="Enter amount in your currency" value="{{ plan.display_amount if plan.display_amount is not none else '' }}"
+              data-min-usd="{{ plan.min_usd }}" data-min-local="{{ plan.display_min_local }}" data-rate="{{ plan.rate }}" data-currency-symbol="{{ plan.currency_symbol or '$' }}" data-max-usd="{{ plan.max_usd }}" data-max-local="{{ plan.display_max_local }}" title="Min: {{ plan.currency_symbol or '$' }}{{ '%.2f'|format(plan.display_min_local if plan.display_min_local is not none else 0) }}{% if plan.display_max_local %}, Max: {{ plan.currency_symbol or '$' }}{{ '%.2f'|format(plan.display_max_local) }}{% endif %}">
+            <div class="hint">Plans are defined in USD. This amount will be converted to USD for internal accounting.</div>
+            <div class="hint" id="minmax_hint" style="margin-top:6px;color:#374151;font-size:13px">Minimum: {{ plan.currency_symbol or '$' }}{{ '%.2f'|format(plan.display_min_local if plan.display_min_local is not none else 0) }}{% if plan.display_max_local %} — Maximum: {{ plan.currency_symbol or '$' }}{{ '%.2f'|format(plan.display_max_local) }}{% endif %}</div>
+            <div id="local_amount_error" style="color:#b91c1c;margin-top:8px;display:none"></div>
+          </div>
+          <button class="btn invest-btn" type="submit">🚀 Invest Now</button>
+        </form>
+      {% else %}
+        <a class="btn invest-btn" href="/login?next=/plans/{{ plan.id }}">🚀 Login to Invest</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+<!-- Confirmation modal -->
+<div id="confirmModal" style="display:none;position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;z-index:200">
+  <div style="background:#fff;padding:18px;border-radius:8px;max-width:420px;margin:0 auto;box-shadow:0 10px 30px rgba(0,0,0,0.2)">
+    <h3 style="margin-top:0">Confirm Investment</h3>
+    <div id="confirmBody" style="margin-bottom:12px"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button id="confirmCancel" class="btn" style="background:#eee;color:var(--accent)">Cancel</button>
+      <button id="confirmOk" class="btn" style="background:var(--accent);color:#fff">Confirm</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
