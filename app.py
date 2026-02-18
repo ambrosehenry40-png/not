@@ -38,6 +38,15 @@ def init_db():
     conn.commit()
     conn.close()
 
+# Ensure the database schema exists when the app starts under WSGI
+try:
+    if not os.path.exists(DB_PATH):
+        init_db()
+except Exception:
+    # Avoid crashing on import; errors will surface in logs
+    import sys
+    print('Warning: failed to initialize database schema', file=sys.stderr)
+
 @app.route('/')
 def index():
     # server-side pagination
